@@ -1,73 +1,223 @@
-# Welcome to your Lovable project
+Creek AI
 
-## Project info
+Creek AI is a modern web application that transforms spoken sermons and lectures into organized, actionable notes using artificial intelligence. Record audio, get AI-powered transcriptions, and automatically generate summarized notes—all in one seamless interface.
+✨ Features
+🎤 Recording & Processing
 
-**URL**: https://lovable.dev/projects/bded81c1-8835-430e-bf50-a8dc3dc55675
+    Browser-Based Recording: Record sermons directly in your browser
 
-## How can I edit this code?
+    AI Transcription: Convert audio to accurate text using advanced speech recognition
 
-There are several ways of editing your application.
+    Smart Summarization: Generate structured summaries from transcripts
 
-**Use Lovable**
+    Multi-Format Export: Save notes as text or downloadable PDFs
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/bded81c1-8835-430e-bf50-a8dc3dc55675) and start prompting.
+🎨 User Experience
 
-Changes made via Lovable will be committed automatically to this repo.
+    Dark/Light Mode: Choose your preferred theme
 
-**Use your preferred IDE**
+    Responsive Design: Works on desktop, tablet, and mobile devices
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+    Modern UI: Clean, intuitive interface with smooth animations
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+    Accessibility First: WCAG AA compliant with keyboard navigation
 
-Follow these steps:
+📁 Note Management
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+    Save & Organize: Store your processed notes
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+    Quick Preview: Browse saved notes with previews
 
-# Step 3: Install the necessary dependencies.
-npm i
+    Easy Retrieval: View and manage your sermon collection
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+🗂️ Project Structure
+Pages
+
+    Landing Page (/)
+
+        Welcome screen with hero section
+
+        Feature highlights
+
+        Quick start button
+
+    Recorder Page (/record)
+
+        Audio recording interface with visualizer
+
+        Recording controls (Start/Pause/Stop)
+
+        Generate notes button
+
+    Result Page (/result)
+
+        Tabbed view for transcript and summary
+
+        Save, download, and record another options
+
+        Preview of AI-generated content
+
+    Saved Notes Page (/saved)
+
+        List of all saved notes
+
+        Note preview with metadata
+
+        View and delete functionality
+
+🎨 Design System
+Color Themes
+
+Light Mode:
+
+    Primary: #2563EB (Vibrant Blue)
+
+    Background: #FFFFFF (Pure White)
+
+    Text: #0F172A (Dark Charcoal)
+
+Dark Mode:
+
+    Primary: #3B82F6 (Bright Blue)
+
+    Background: #020617 (Deep Navy)
+
+    Text: #F8FAFC (Light Gray)
+
+UI Components
+
+    Buttons: Rounded corners (12px), clear hover states
+
+    Cards: Soft shadows, ample padding (20px)
+
+    Typography: Inter font family for optimal readability
+
+    Layout: Max width 1200px, responsive grid system
+
+🚀 Getting Started
+Prerequisites
+
+    Modern web browser with microphone access
+
+    Node.js (for development)
+
+    Firebase project (for authentication and storage)
+
+Installation
+bash
+
+# Clone the repository
+git clone https://github.com/yourusername/creek-ai.git
+
+# Install dependencies
+cd creek-ai
+npm install
+
+# Start development server
 npm run dev
-```
 
-**Edit a file directly in GitHub**
+Environment Variables
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Create a .env file in the root directory:
+env
 
-**Use GitHub Codespaces**
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+🔧 Technical Stack
 
-## What technologies are used for this project?
+Frontend:
 
-This project is built with:
+    React with TypeScript
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+    Tailwind CSS for styling
 
-## How can I deploy this project?
+    React Router for navigation
 
-Simply open [Lovable](https://lovable.dev/projects/bded81c1-8835-430e-bf50-a8dc3dc55675) and click on Share -> Publish.
+    Web Audio API for recording
 
-## Can I connect a custom domain to my Lovable project?
+Backend:
 
-Yes, you can!
+    Firebase Authentication
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+    Cloud Functions for AI processing
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+    Firestore Database
+
+AI Services:
+
+    Speech-to-Text transcription
+
+    NLP-based summarization
+
+    Optional: OpenAI or Google Cloud AI
+
+📱 Usage Flow
+
+    Record: Start recording directly in the browser
+
+    Process: Upload audio for AI transcription and summarization
+
+    Review: View both full transcript and AI-generated summary
+
+    Save: Store notes locally or to your account
+
+    Manage: Access saved notes anytime
+
+🔐 Authentication
+
+Creek AI uses Firebase Authentication with:
+
+    Email/password sign-in
+
+    Google OAuth integration
+
+    Protected routes for saved notes
+
+♿ Accessibility
+
+    WCAG AA color contrast compliance
+
+    Full keyboard navigation support
+
+    Screen reader labels and ARIA attributes
+
+    Reduced motion preferences respected
+
+🎯 Future Enhancements
+
+    Real-time transcription during recording
+
+    Multiple language support
+
+    Advanced note editing tools
+
+    Collaboration features for teams
+
+    Mobile app version
+
+    Customizable summary templates
+
+    Integration with sermon libraries
+
+🤝 Contributing
+
+Contributions are welcome! Please read our Contributing Guidelines for details on our code of conduct and the process for submitting pull requests.
+📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+🙏 Acknowledgments
+
+    Icons by Lucide React
+
+    UI Components by shadcn/ui
+
+    Fonts by Google Fonts
+
+    Color palette inspired by Tailwind CSS
+
+Creek AI – Transform spoken wisdom into written insight ✍️
