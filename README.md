@@ -128,6 +128,26 @@ VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
 VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
 
+## Local backend integration
+
+To use the local FastAPI backend for transcription during development, set the frontend environment variable `VITE_API_URL` to point at the backend. You can copy `.env.example` to `.env` and edit the value.
+
+Example:
+
+1. Start backend (from `creek-backend`):
+
+   - Create a virtualenv and install requirements from `creek-backend/requirements.txt`.
+   - Run `uvicorn main:app --reload --host 0.0.0.0 --port 8000`.
+
+2. In the frontend root, copy `.env.example` to `.env` and ensure `VITE_API_URL=http://localhost:8000`.
+
+3. Start the frontend dev server (`npm run dev`) and open the recorder page. When you click "Generate Notes" the recorded audio will be uploaded to `POST /api/transcribe` on the configured backend and the result will be shown on the Result page.
+
+Notes:
+
+- The backend in `creek-backend/main.py` currently returns a placeholder transcription. Replace the transcription logic with your model or external service in `transcribe_audio`.
+- For production, set proper CORS origins on the backend and secure the endpoints.
+
 🔧 Technical Stack
 
 Frontend:

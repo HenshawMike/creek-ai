@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Trash2, FileText, Calendar } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Trash2, FileText, Calendar, Loader2 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { api } from "@/lib/api";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,29 +21,61 @@ interface Note {
   id: number;
   date: string;
   title: string;
-  summary: string;
   transcript: string;
+  formatted: Record<string, unknown>;
+  metadata: {
+    title?: string;
+    speaker?: string;
+    date?: string;
+  };
+  audioUrl?: string | null;
 }
 
 const Saved = () => {
   const [notes, setNotes] = useState<Note[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadNotes();
   }, []);
 
-  const loadNotes = () => {
-    const savedNotes = JSON.parse(localStorage.getItem("savedNotes") || "[]");
-    setNotes(savedNotes);
+  const loadNotes = async () => {
+    try {
+      setIsLoading(true);
+      // First try to load from local storage as fallback
+      const localNotes = JSON.parse(localStorage.getItem("savedNotes") || "[]");
+      setNotes(localNotes);
+      
+      // TODO: Uncomment when backend API is ready
+      // const response = await api.getSavedNotes();
+      // setNotes(response);
+    } catch (error) {
+      console.error("Failed to load notes:", error);
+      toast.error("Failed to load saved notes");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleDelete = (id: number) => {
-    const updatedNotes = notes.filter(note => note.id !== id);
-    localStorage.setItem("savedNotes", JSON.stringify(updatedNotes));
-    setNotes(updatedNotes);
-    setDeleteId(null);
-    toast.success("Note deleted");
+  const handleDelete = async (id: number) => {
+    try {
+      // TODO: Uncomment when backend API is ready
+      // await api.deleteNote(id);
+      
+      // Update local storage as fallback
+      const updatedNotes = notes.filter(note => note.id !== id);
+      localStorage.setItem("savedNotes", JSON.stringify(updatedNotes));
+      setNotes(updatedNotes);
+      
+      toast.success("Note deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete note:", error);
+      toast.error("Failed to delete note");
+    } finally {
+      setDeleteId(null);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -55,7 +88,22 @@ const Saved = () => {
   };
 
   const getPreview = (text: string) => {
+    if (!text) return "No preview available";
     return text.slice(0, 150) + (text.length > 150 ? "..." : "");
+  };
+
+  const formatSummary = (formatted: Record<string, unknown>) => {
+    if (!formatted) return '';
+    
+    let summary = '';
+    
+    if (formatted.keyPoints && Array.isArray(formatted.keyPoints)) {
+      summary = formatted.keyPoints.slice(0, 2).map((point: string) => 
+        `• ${point}`
+      ).join('\n');
+    }
+    
+    return summary || 'No summary available';
   };
 
   return (
@@ -71,7 +119,11 @@ const Saved = () => {
             </p>
           </div>
 
-          {notes.length === 0 ? (
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : notes.length === 0 ? (
             <Card className="p-12 text-center space-y-4 shadow-soft">
               <FileText className="h-16 w-16 mx-auto text-muted-foreground" />
               <h2 className="text-2xl font-semibold">No saved notes yet</h2>
@@ -91,13 +143,16 @@ const Saved = () => {
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 space-y-2">
-                      <h3 className="text-xl font-semibold">{note.title}</h3>
+                      <h3 className="text-xl font-semibold">{note.metadata?.title || note.title}</h3>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Calendar className="h-4 w-4" />
-                        {formatDate(note.date)}
+                        {formatDate(note.metadata?.date || note.date)}
+                        {note.metadata?.speaker && (
+                          <span>• {note.metadata.speaker}</span>
+                        )}
                       </div>
-                      <p className="text-muted-foreground">
-                        {getPreview(note.transcript)}
+                      <p className="text-muted-foreground line-clamp-2">
+                        {formatSummary(note.formatted) || getPreview(note.transcript)}
                       </p>
                     </div>
                     <Button
@@ -111,25 +166,41 @@ const Saved = () => {
                   </div>
                   
                   <div className="flex gap-3 pt-2">
-                    <Button variant="outline" className="rounded-xl" asChild>
-                      <a
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          const content = `TRANSCRIPT\n\n${note.transcript}\n\n\nSUMMARY\n\n${note.summary}`;
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        className="rounded-xl"
+                        onClick={() => {
+                          navigate('/result', { 
+                            state: { 
+                              transcript: note.transcript,
+                              formatted: note.formatted,
+                              metadata: note.metadata,
+                              audioBlob: note.audioUrl ? fetch(note.audioUrl).then(res => res.blob()) : null
+                            } 
+                          });
+                        }}
+                      >
+                        View Details
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="rounded-xl"
+                        onClick={() => {
+                          const content = `TRANSCRIPT\n\n${note.transcript}\n\n\nSUMMARY\n\n${JSON.stringify(note.formatted, null, 2)}`;
                           const blob = new Blob([content], { type: "text/plain" });
                           const url = URL.createObjectURL(blob);
                           const a = document.createElement("a");
                           a.href = url;
-                          a.download = `${note.title}.txt`;
+                          a.download = `${note.metadata?.title || note.title}.txt`;
                           a.click();
                           URL.revokeObjectURL(url);
                           toast.success("Downloaded!");
                         }}
                       >
                         Download
-                      </a>
-                    </Button>
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               ))}

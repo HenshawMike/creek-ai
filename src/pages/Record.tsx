@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Mic, Square, Play, Pause, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { api, type TranscribeResponse } from "@/lib/api";
 
 const Record = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -86,20 +87,35 @@ const Record = () => {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const handleGenerateNotes = () => {
+  const handleGenerateNotes = async () => {
     if (!audioBlob) {
       toast.error("No recording available");
       return;
     }
 
     setIsProcessing(true);
-    
-    // Simulate processing (will be replaced with actual AI integration)
-    setTimeout(() => {
+    toast.loading("Processing your recording...");
+
+    try {
+      const response = await api.transcribeAudio(audioBlob);
       setIsProcessing(false);
+      toast.dismiss();
       toast.success("Notes generated successfully!");
-      navigate("/result", { state: { audioBlob } });
-    }, 2000);
+      navigate("/result", { 
+        state: { 
+          transcript: response.transcript, 
+          formatted: response.formatted,
+          metadata: response.metadata,
+          audioBlob 
+        } 
+      });
+    } catch (error) {
+      console.error("Transcription error:", error);
+      setIsProcessing(false);
+      toast.dismiss();
+      const message = error instanceof Error ? error.message : "Failed to generate notes";
+      toast.error(message);
+    }
   };
 
   return (
