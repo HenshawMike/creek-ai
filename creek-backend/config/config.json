@@ -1,0 +1,115 @@
+{
+  "system": {
+    "name": "Sermon Transcription and Processing System",
+    "version": "1.0",
+    "description": "A system for real-time sermon recording, transcription, and formatting"
+  },
+  "recording": {
+    "input_device": "default",
+    "sample_rate": 16000,
+    "channels": 1,
+    "chunk_size": 1024,
+    "format": "WAV",
+    "save_directory": "./recordings",
+    "max_duration_minutes": 120
+  },
+  "transcription": {
+    "model": {
+      "name": "espnet/owsm_v4_small_370M",
+      "local_path": "/home/henshawmikel/.cache/huggingface/hub/models--espnet--owsm_v4_small_370M/snapshots/1d855cbc60d16362a281444be4849539e17af077",
+      "device": "cuda",
+      "language": "en"
+    },
+    "vad": {
+      "enabled": true,
+      "threshold": 0.5,
+      "min_silence_duration_ms": 500
+    }
+  },
+  "post_processing": {
+    "formatting": {
+      "sections": [
+        {
+          "title": "Sermon Title",
+          "content_type": "title",
+          "auto_generate": true
+        },
+        {
+          "title": "Scripture References",
+          "content_type": "verses",
+          "auto_extract": true
+        },
+        {
+          "title": "Introduction",
+          "content_type": "paragraph"
+        },
+        {
+          "title": "Main Points",
+          "content_type": "points",
+          "subsections": [
+            {
+              "title": "Point 1",
+              "content_type": "paragraph"
+            },
+            {
+              "title": "Point 2",
+              "content_type": "paragraph"
+            },
+            {
+              "title": "Point 3",
+              "content_type": "paragraph"
+            }
+          ]
+        },
+        {
+          "title": "Conclusion",
+          "content_type": "paragraph"
+        },
+        {
+          "title": "Application",
+          "content_type": "points"
+        },
+        {
+          "title": "Closing Prayer",
+          "content_type": "paragraph"
+        }
+      ]
+    },
+    "text_cleanup": {
+      "remove_fillers": true,
+      "capitalize_sentences": true,
+      "fix_punctuation": true,
+      "break_paragraphs": true
+    }
+  },
+  "output": {
+    "formats": [
+      {
+        "type": "txt",
+        "save_directory": "./output/text"
+      },
+      {
+        "type": "docx",
+        "save_directory": "./output/docs",
+        "template": {
+          "title_style": "Heading 1",
+          "heading_style": "Heading 2",
+          "normal_style": "Normal",
+          "font_name": "Times New Roman",
+          "font_size": 12
+        }
+      }
+    ],
+    "naming_convention": "Sermon_%Y%m%d_%H%M%S"
+  },
+  "metadata": {
+    "default_speaker": "Pastor",
+    "default_location": "Church Name",
+    "default_date": "auto",
+    "custom_fields": {
+      "series": "",
+      "bible_passage": "",
+      "service_type": "Sunday Service"
+    }
+  }
+}
