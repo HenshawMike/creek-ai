@@ -107,7 +107,7 @@ Installation
 bash
 
 # Clone the repository
-git clone https://github.com/yourusername/creek-ai.git
+git clone https://github.com/HenshawMike/creek-ai.git
 
 # Install dependencies
 cd creek-ai
